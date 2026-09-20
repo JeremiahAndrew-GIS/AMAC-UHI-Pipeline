@@ -37,6 +37,15 @@
 - **Coverage flag — check before using:** 60,563 features is roughly 50x the count the pack's own worked example got for a comparable single LGA (1,247 for Ibadan North). The map view also shows road/built-up coverage extending well past the red AMAC ward outline into surrounding areas. This suggests the extraction pulled a bounding-box extent rather than clipping precisely to the 12 ward polygons. Re-run with an exact polygon clip before this feeds the QA check — otherwise it'll flag false "gaps" or mask real ones by comparing against roads that aren't actually inside AMAC.
 - Role: QA only, not fed into the index (GRID3 Roads v1.0 remains primary per our earlier decision)
 
+## CRS and preparation, AMAC Ward Boundaries
+Source layer (GRID3 Operational Wards v3.0) arrived in EPSG:4326 (WGS 84)
+Study area: already scoped to AMAC's 12 wards, no separate clip needed for this layer
+Calculated area in the original CRS (area_wrong field, $area while still in EPSG:4326): every ward rounded to 0 in the AREASQKM field, confirms these were square-degree values, not a real area unit
+Reprojected to EPSG:32632 (UTM Zone 32N) the correct UTM zone for FCT/Abuja (32631 covers western Nigeria, not this area)
+Recalculated area after reprojection (area_m2 → area_km2) matches GRID3's own precomputed area_sqkm field exactly, ward for ward: City Center 1 = 91, Garki 1 = 78, Gui = 251, Gwagwa = 57, Gwarinpa = 139, Jiwa = 117, Kabusa = 214, Karshi 1 = 272, Karu = 27, Nyanya 1 = 16, Orozo = 159, Wuse = 24 (km²)
+Sanity check: total AMAC area across all 12 wards = 1,445 km² — two independent calculations (GRID3's shipped field and my own reprojected recalculation) agree exactly
+Working file: AMAC_Ward_Boundaries_utm32, saved to data/processed/
+
 That last line about coverage is the kind of note that saves you in month six.
 
 Commit it with the message `Add data notes`.
