@@ -1,27 +1,55 @@
-[README.md](https://github.com/user-attachments/files/31875292/README.md)
-# AMAC Urban Heat Island Pipeline
+[README (1).md](https://github.com/user-attachments/files/32174029/README.1.md)# AMAC Heat Risk Index
 
-Which of AMAC's six sampled localities Garki 2, Jikwoyi, Idu, Chika, Gidan Mangoro, and Gosa have a mean Land Surface Temperature above 35°C in 2025?
+Which of AMAC's 12 wards face the highest heat risk, and can that answer keep itself current without manual GIS work every time someone asks?
 
-Built over twelve months with GeoDev Lab Africa, Cohort 2. See [`project-brief.md`](./project-brief.md) for the full brief.
+Built over twelve months with GeoDev Lab Africa, Cohort 2.
+
+## The question
+
+This project scores all 12 wards in Abuja Municipal Area Council (AMAC) City Center 1, Garki 1, Gui, Gwagwa, Gwarinpa, Jiwa, Kabusa, Karshi 1, Karu, Nyanya 1, Orozo, and Wuse  on a composite heat risk index, combining:
+
+- **Exposure**  how hot a ward actually gets (LST, NDBI, NDVI)
+- **Sensitivity**  who and what is most affected by that heat (population, population 65+ and under 5, household size, building/settlement density)
+- **Adaptive capacity**  how well-equipped a ward is to cope (health facility access, road density, green space)
+
+Full reasoning and datasets are in [`data-notes.md`](./data-notes.md).
+
+## Why it matters
+
+I answered a version of this question once before, by hand, in my undergraduate thesis on urban heat island dynamics in Abuja. That answer lived in a folder and needed redoing manually every time. This time the goal is a system: same rigor, but it re-runs on its own.
 
 ## Datasets used
 
-| Dataset | Source |
-|---|---|
-| AMAC administrative boundary | [GADM Nigeria](https://gadm.org) |
-| Locality reference points (6 sample sites) | Own 2025 KoboToolbox field survey  https://drive.google.com/file/d/15Ku8SG7R47YfIBlk2OG9LeBRTDF6xqWX/view?usp=drive_link |
-| Landsat 8/9 Collection 2 Level-2 SR | [USGS/NASA via Earth Engine](https://developers.google.com/earth-engine/datasets/catalog/landsat-8) |
-| Sentinel-2 SR | [Copernicus via Earth Engine](https://developers.google.com/earth-engine/datasets/catalog/sentinel-2) |
-| MODIS MOD11A2 LST | [NASA LP DAAC via Earth Engine](https://developers.google.com/earth-engine/datasets/catalog/MODIS_061_MOD11A2) |
+| Dataset | Source | Role |
+|---|---|---|
+| Operational Wards v3.0 | [GRID3](https://data.grid3.org) | Study area  AMAC's 12 wards |
+| AMAC/state boundaries | [GADM v4.1](https://gadm.org) | Boundary cross-check |
+| Health Facilities v3.0 | [GRID3](https://data.grid3.org) | Adaptive capacity |
+| Settlement Extents v4.1 | [GRID3](https://data.grid3.org) | Sensitivity (density, building metrics) |
+| Roads v1.0 (primary) | [GRID3](https://data.grid3.org) | Adaptive capacity (road density) |
+| OSM roads | Overpass API, via OSM Extractor | QA cross-check only  not fed into the index |
+| OSM buildings | Overpass API, via OSM Extractor | Sensitivity |
 
-## What this repo builds toward
+Full source links, feature counts, columns, and data quality notes for every layer are in [`data-notes.md`](./data-notes.md).
 
-A Python pipeline (`ee` + `geemap`) that computes NDVI, NDBI, and LST for the six AMAC localities above, QA'd in QGIS against known field points, and re-run on a schedule via GitHub Actions, so the answer above stays current without manual GEE work.
+## What I'm building toward
+
+A Python pipeline (`ee` + `geemap`) that computes NDVI, NDBI, and LST for AMAC's wards, combined with the demographic and infrastructure layers above into one composite index. QA'd in QGIS, re-run on a schedule via GitHub Actions  so the ranking stays current without manual GEE or QGIS work each time.
+
+## Repo structure
+
+```
+data/
+  raw/          downloaded, never edited
+  processed/    derived outputs
+data-notes.md   full dataset documentation
+project-brief.md   Week 1 brief
+```
 
 ## Status
 
-Month 1, Week 1: question drafted, data sources checked and linked above, repository created.
-
+- **Week 1:** question drafted, data sources checked and linked, repository created.
+- **Week 2:** real data downloaded and opened in QGIS (wards, health facilities, boundaries, roads), documented in `data-notes.md`. Known issue: OSM road extraction needs re-clipping to exact ward boundaries before it's usable for QA (see data-notes.md).
+-- **Week 3:** CRS Reprojection to WGS 32632 UTM 32N
 ---
 Andrew Jeremiah Ojonugwa
