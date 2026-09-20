@@ -50,6 +50,7 @@ project-brief.md   Week 1 brief
 
 - **Week 1:** question drafted, data sources checked and linked, repository created.
 - **Week 2:** real data downloaded and opened in QGIS (wards, health facilities, boundaries, roads), documented in `data-notes.md`. Known issue: OSM road extraction needs re-clipping to exact ward boundaries before it's usable for QA (see data-notes.md).
+
 -- **Week 3:** CRS Reprojection to WGS 32632 UTM 32N
 ---
 Andrew Jeremiah Ojonugwa
